@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>交易城</title>
+    <!-- 引入Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> 
+    <!-- 引入Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- 侧边导航栏 -->
+<nav class="sidebar">
+    <div class="list-group">
+        <div class="list-group-item list-group-item-heading">POKEMONHOME</div> <!-- 无法选中的头部 -->
+        <a href="package.html" class="list-group-item list-group-item-action ">背包</a>
+        <a href="storage.html" class="list-group-item list-group-item-action ">仓库</a>
+        <a href="card.html" class="list-group-item list-group-item-action">训练师卡片</a>
+        <a href="pokedex.html" class="list-group-item list-group-item-action">全图鉴</a>
+        <a href="itemdex.html" class="list-group-item list-group-item-action">道具图鉴</a>
+        <a href="exchange.html" class="list-group-item list-group-item-action">交换池</a>
+        <a href="friends.html" class="list-group-item list-group-item-action ">好友</a>
+        <a href="itemPackage.html" class="list-group-item list-group-item-action ">道具背包</a>
+        <a href="trade.html" class="list-group-item list-group-item-action  active">道聚城</a>
+        <div class="divider"></div>
+    </div>
+</nav>
+<!-- 主要内容 -->
+<div class="main-content">
+    <!-- 上方导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span id="pointsDisplay">积分: 0</span> <!-- Displaying wallet balance -->
+                        <img id="user-avatar" src="" alt="头像" class="rounded-circle" width="30" height="30">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="change-password.html">更改密码</a>
+                        <a class="dropdown-item" href="logout.html">登出</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Search and Table -->
+    <div class="container mt-3">
+        <!-- 显示表格 -->
+        <div class="table-container row mt-3">
+            <div class="col-md-12">
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>商品编号</th>
+                        <th>商品名称</th>
+                        <th>卖家</th>
+                        <th>价格</th>
+                        <th>是否稀有</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="itemTableBody">
+                    <!-- 动态数据行 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 引入Bootstrap和jQuery的JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> 
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script> 
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> 
+<script src="https://kit.fontawesome.com/a076d05399.js"></script> 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetchItems();
+        fetchPoints();
+
+        function fetchItems() {
+            fetch('/TradeItems')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('itemTableBody');
+                    tbody.innerHTML = '';
+                    data.items.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                        <td>${item.propid}</td> <!-- 这里应该是 propid -->
+                        <td>${item.propName}</td>
+                        <td>${item.ownerName}</td>
+                        <td>${item.price}</td>
+                        <td>${item.special}</td>
+                        <td><button onclick="buyItem(${item.propid}, '${item.ownerName}')" class="btn btn-success">购买</button></td>
+                    `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+        function updateTable(items) {
+            const tbody = document.getElementById('itemTableBody');
+            tbody.innerHTML = '';
+            items.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                        <td>${item.propid}</td> <!-- 这里应该是 propid -->
+                        <td>${item.propName}</td>
+                        <td>${item.ownerName}</td>
+                        <td>${item.price}</td>
+                        <td>${item.special}</td>
+                        <td><button onclick="buyItem(${item.id})" class="btn btn-success">购买</button></td>
+                    `;
+                tbody.appendChild(row);
+            });
+        }
+
+        window.buyItem = function(propid, ownerName) {
+            // 创建请求体数据
+            const data = {
+                propid: propid,
+                ownerName: ownerName,
+            };
+
+            // 发送POST请求到/buyTradeItem端点，并包含请求体
+            fetch(`/buyTradeItem`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // 设置请求头为JSON
+                },
+                body: JSON.stringify(data) // 将请求体数据转换为JSON字符串
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('购买成功！');
+                        fetchPoints();
+                    } else {
+                        alert('购买失败，请稍后重试。');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error processing purchase:', error);
+                    alert('购买失败，请检查网络连接。');
+                });
+        };
+        function fetchPoints() {
+            fetch('/getPoints')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('pointsDisplay').textContent = `积分: ${data.points}`;
+                })
+                .catch(error => {
+                    console.error('Error fetching points:', error);
+                });
+        }
+    });
+</script>
+</body>
+</html>

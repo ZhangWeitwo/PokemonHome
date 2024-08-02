@@ -1,0 +1,103 @@
+html,body {
+	height: 100%;
+}
+
+body.my-login-page {
+	background-color: #f7f9fb;
+	font-size: 14px;
+}
+
+.my-login-page .brand {
+	width: 90px;
+	height: 90px;
+	overflow: hidden;
+	border-radius: 50%;
+	margin: 40px auto;
+	box-shadow: 0 4px 8px rgba(0,0,0,.05);
+	position: relative;
+	z-index: 1;
+}
+
+.my-login-page .brand img {
+	width: 100%;
+}
+
+.my-login-page .card-wrapper {
+	width: 400px;
+}
+
+.my-login-page .card {
+	border-color: transparent;
+	box-shadow: 0 4px 8px rgba(0,0,0,.05);
+}
+
+.my-login-page .card.fat {
+	padding: 10px;
+}
+/*登录按钮*/
+.btn-red {
+    background-color: #dc3545; /* 红色背景 */
+    border-color: #dc3545;    /* 红色边框 */
+    color: white;             /* 白色文字 */
+}
+
+.btn-red:hover {
+   background-color: #f84a3f; /* 悬停时背景颜色 */
+    color: black;              /* 悬停时文字颜色 */
+    animation: borderRainbow 10s infinite; /* 引用边框颜色变化动画 */
+    box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ffd866, 0 0 40px #ffd866, 0 0 50px #ffd866, 0 0 60px #ffd866, 0 0 70px #ffd866;
+}
+.btn-primary:hover {
+    animation: borderRainbow 10s infinite; /* 引用边框颜色变化动画 */
+    box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ffd866, 0 0 40px #ffd866, 0 0 50px #ffd866, 0 0 60px #ffd866, 0 0 70px #ffd866;
+}
+.my-login-page .card .card-title {
+	margin-bottom: 30px;
+}
+
+.my-login-page .form-control {
+	border-width: 2.3px;
+}
+
+.my-login-page .form-group label {
+	width: 100%;
+}
+
+.my-login-page .btn.btn-block {
+	padding: 12px 10px;
+}
+
+.my-login-page .footer {
+	margin: 40px 0;
+	color: #888;
+	text-align: center;
+}
+
+@media screen and (max-width: 425px) {
+	.my-login-page .card-wrapper {
+		width: 90%;
+		margin: 0 auto;
+	}
+}
+
+@media screen and (max-width: 320px) {
+	.my-login-page .card.fat {
+		padding: 0;
+	}
+
+	.my-login-page .card.fat .card-body {
+		padding: 15px;
+	}
+}
+
+/*炫彩*/
+@keyframes rainbow {
+    0% { color: red; }
+    14% { color: orange; }
+    28% { color: yellow; }
+    42% { color: green; }
+    56% { color: blue; }
+    70% { color: indigo; }
+    84% { color: violet; }
+    100% { color: red; }
+}

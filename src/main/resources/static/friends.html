@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>好友管理</title>
+    <!-- 引入Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- 引入Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+    .main-content {
+        margin-left: 200px; /* 调整侧边栏宽度 */
+        padding: 20px;
+
+    }
+    .modal-content {
+        width: 80%;
+        max-width: 600px;
+        margin: auto;
+    }
+    .table-container {
+        height: 750px;
+        width: 60%; /* 设置表格宽度为 45% */
+    }
+    button {
+        padding: 10px 20px;
+        margin: 5px;
+        font-size: 16px;
+        transition: transform 0.3s;
+    }
+    button:hover {
+        transform: scale(1.2);
+    }
+   #infoBox {
+     position: absolute;
+     background: rgba(255, 255, 255, 0.6); /* 半透明背景 */
+     color: black;
+     padding: 10px;
+     border-radius: 5px;
+     font-size: 18px;
+     display: none;
+     pointer-events: none;
+     z-index: 10; /* 高层级 */
+     top: 10px; /* 放置在页面的顶部 */
+     left: 10px; /* 放置在页面的左边 */
+     width: 300px; /* 固定宽度 */
+     backdrop-filter: blur(10px); /* 磨砂效果 */
+     -webkit-backdrop-filter: blur(10px); /* 兼容 Safari */
+     border: 1px solid rgba(255, 255, 255, 0.2); /* 增加一个微弱的边框来增强效果 */
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* 添加阴影效果 */
+}
+    #infoBox p {
+        margin: 0;
+    }
+    .container {
+        margin-left: 200px;
+        width: 1430px;
+        display: flex;
+        flex-direction: row; /* 横向排列子元素 */
+    }
+    #theTow {
+        margin-left: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 38%; /* 设置 3D 容器宽度为 45% */
+    }
+    #container3d {
+        width: 100%; /* 设置容器宽度为 100%，使其占满父容器 */
+        height: 600px;
+    }
+    #friendlocate {
+         font-size: 36px; /* 大字号 */
+         color: #ffffff; /* 白色字体 */
+         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 阴影效果 */
+         font-weight: bold; /* 加粗字体 */
+         text-align: left; /* 居中对齐 */
+         margin: 20px 0; /* 上下边距 */
+         padding: 10px; /* 内边距 */
+    }
+    #friendnum {
+        color: blue;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 阴影效果 */
+         font-weight: bold; /* 加粗字体 */
+         margin: 20px 0; /* 上下边距 */
+         padding: 10px; /* 内边距 */
+    }
+    #countinent {
+         color: green;
+         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 阴影效果 */
+         font-weight: bold; /* 加粗字体 */
+         text-align: left; /* 居中对齐 */
+         padding: 10px; /* 内边距 */
+    }
+    #countititle {
+         color: red;
+         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 阴影效果 */
+         font-weight: bold; /* 加粗字体 */
+         text-align: left; /* 居中对齐 */
+         margin: 0;
+         font-size: 24px;
+         padding: 10px; /* 内边距 */
+    }
+</style>
+</head>
+<body>
+<!-- 侧边导航栏 -->
+<nav class="sidebar">
+    <div class="list-group">
+        <div class="list-group-item list-group-item-heading">POKEMONHOME</div> <!-- 无法选中的头部 -->
+        <a href="package.html" class="list-group-item list-group-item-action ">背包</a>
+        <a href="storage.html" class="list-group-item list-group-item-action ">仓库</a>
+        <a href="card.html" class="list-group-item list-group-item-action">训练师卡片</a>
+        <a href="pokedex.html" class="list-group-item list-group-item-action">全图鉴</a>
+        <a href="itemdex.html" class="list-group-item list-group-item-action">道具图鉴</a>
+        <a href="exchange.html" class="list-group-item list-group-item-action">交换池</a>
+        <a href="friends.html" class="list-group-item list-group-item-action  active">好友</a>
+        <a href="itemPackage.html" class="list-group-item list-group-item-action ">道具背包</a>
+        <a href="trade.html" class="list-group-item list-group-item-action ">道聚城</a>
+        <div class="divider"></div>
+    </div>
+</nav>
+<!-- 主要内容 -->
+<div class="main-content">
+    <!-- 上方导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img id="trainer-avatar" src="" alt="头像" class="rounded-circle" width="30" height="30">
+                        <span id="welcome-text" style="font-weight: bold; color: black; font-family: 'Heiti', '黑体';"></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="reset.html">更改密码</a>
+                        <a class="dropdown-item" href="login.html">登出</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- 好友列表 -->
+    <div class="container mt-3">
+        <!-- 显示好友列表 -->
+        <div class="table-container row mt-3" id="friendList">
+            <div class="col-md-12">
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>   </th>
+                        <th>名字</th>
+                        <th>性别</th>
+
+                        <th>所在地</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="friendTableBody">
+                    <!-- 动态数据行 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="theTow">
+            <div id="3dworld">
+                <p id="friendlocate">好友分布</p>
+                <div id="container3d"></div>
+                <div id="infoBox">Information Box</div>
+            </div>
+            <div id="friendIdbtn">
+            <button id="addFriendBtn" class="btn btn-primary">添加好友</button>
+            <button id="getRequestBtn" class="btn btn-primary">申请列表</button>
+            </div>
+        </div>
+    </div>
+    <!-- 添加好友小窗口 -->
+    <div id="addFriendModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>添加好友</h2>
+            <form id="addFriendForm">
+                <div class="form-group">
+                    <label for="friendId">好友ID</label>
+                    <input type="text" class="form-control" id="friendId" required>
+                </div>
+                <button type="submit" class="btn btn-primary">添加</button>
+            </form>
+        </div>
+    </div>
+    <!-- 处理好友申请的小窗口 -->
+    <div id="getRequestModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>申请列表</h2>
+            <table class="table table-hover">
+                <thead class="thead-light">
+                <tr>
+                    <th>  </th>
+                    <th>ID</th>
+                    <th>名字</th>
+                    <th>性别</th>
+
+                    <th>所在地</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="requestTableBody">
+                <!-- 动态数据行 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- 引入Bootstrap和jQuery的JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetchFriends();
+        fetch(`/get-trainer`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.tname.length > 0) {
+                // 设置头像图片的src属性
+                document.getElementById('trainer-avatar').src = data.trainerPic;
+            } else {
+                console.error('No trainer found');
+            }
+        })
+        fetch(`/get-unread-requests-count`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('welcome-text').textContent = `${data.message}`;
+            } else {
+                document.getElementById('welcome-text').textContent = `${data.message}`
+                console.error('No trainer found');
+            }
+        })
+
+        // 打开添加好友对话框
+        const addFriendModal = document.getElementById("addFriendModal");
+        const addFriendBtn = document.getElementById("addFriendBtn");
+        const closeBtns = document.getElementsByClassName("close");
+
+        addFriendBtn.onclick = function () {
+            addFriendModal.style.display = "block";
+        }
+
+        Array.from(closeBtns).forEach(btn => {
+            btn.onclick = function () {
+                btn.parentElement.parentElement.style.display = "none";
+            }
+        });
+        window.onclick = function (event) {
+            if (event.target == addFriendModal) {
+                addFriendModal.style.display = "none";
+            }
+        }
+
+        // 提交添加好友表单
+        document.getElementById('addFriendForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const friendId = document.getElementById('friendId').value;
+            //const friendName = document.getElementById('friendName').value;
+
+            fetch('/send-friend-request', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ friendId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('已发送申请，等待对方确认');
+                    fetchFriends(); // 重新获取好友列表
+                    addFriendModal.style.display = "none"; // 关闭对话框
+                } else {
+                    alert('添加好友失败: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('添加出错');
+            });
+        });
+
+        // 打开申请列表对话框
+
+            // Get the modal
+            var modal = document.getElementById("getRequestModal");
+
+            // Get the button that opens the modal
+            var btn = document.getElementById("getRequestBtn");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks the button, open the modal
+            btn.onclick = function() {
+                fetch('/get-friend-requests-lists')
+                .then(response => response.json())
+                .then(data => {
+                    // Clear existing table rows
+                    var tableBody = document.getElementById("requestTableBody");
+                    tableBody.innerHTML = '';
+
+                    // Populate table with data
+                    data.trainers.forEach((item, index) => {
+                        var row = document.createElement("tr");
+
+                        var cellAvatar = document.createElement("td");
+                        var avatarImg = document.createElement("img");
+                        avatarImg.src = item.trainerPic; // Assuming 'avatar' contains the URL to the image
+                        avatarImg.alt = "Avatar";
+                        avatarImg.style.width = "35px"; // Set the width of the avatar image
+                        avatarImg.style.height = "35px"; // Set the height of the avatar image
+                        avatarImg.style.borderRadius = "50%"
+                        cellAvatar.appendChild(avatarImg);
+                        row.appendChild(cellAvatar);
+
+                        var cellId = document.createElement("td");
+                        cellId.textContent = item.tid;
+                        row.appendChild(cellId);
+
+                        var cellName = document.createElement("td");
+                        cellName.textContent = item.tname;
+                        row.appendChild(cellName);
+
+                        var cellGender = document.createElement("td");
+                        cellGender.textContent = item.gender;
+                        row.appendChild(cellGender);
+
+                        var cellAge = document.createElement("td");
+                        cellAge.textContent = item.age;
+                        row.appendChild(cellAge);
+
+
+                        var cellAction = document.createElement("td");
+                        // Agree button
+                        var agreeButton = document.createElement("button");
+                        agreeButton.textContent = "同意";
+                        agreeButton.style.backgroundColor = "green";
+                        agreeButton.style.color = "white";
+                        agreeButton.onclick = function() {
+                            handleAgreeAction(item.tid);
+                        };
+                        cellAction.appendChild(agreeButton);
+
+                        // Reject button
+                        var rejectButton = document.createElement("button");
+                        rejectButton.textContent = "拒绝";
+                        rejectButton.style.backgroundColor = "red";
+                        rejectButton.style.color = "white";
+                        rejectButton.onclick = function() {
+                            // Handle reject action
+                            handleRefuseAction(item.tid);
+                        };
+                        cellAction.appendChild(rejectButton);
+
+                        row.appendChild(cellAction);
+
+                        tableBody.appendChild(row);
+                    });
+
+                    // Display the modal
+                    modal.style.display = "block";
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+            }
+
+            function handleAgreeAction(id) {
+                fetch(`/receive-friend-request/${id}`, { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        fetchDataAndPopulateModal();
+                        fetchFriends();
+                    })
+                    .catch(error => {
+                        console.error('Error handling agree action:', error);
+                    });
+            }
+            function handleRefuseAction(id) {
+                fetch(`/refuse-friend-request/${id}`, { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        fetchDataAndPopulateModal();
+                        fetchFriends();
+                    })
+                    .catch(error => {
+                        alert('Error handling refuse action\n' + error);
+                    });
+
+            }
+            function fetchDataAndPopulateModal() {
+                fetch('/get-friend-requests-lists')
+                .then(response => response.json())
+                .then(data => {
+                    // Clear existing table rows
+                    var tableBody = document.getElementById("requestTableBody");
+                    tableBody.innerHTML = '';
+
+                    // Populate table with data
+                    data.trainers.forEach((item, index) => {
+                        var row = document.createElement("tr");
+                        var cellAvatar = document.createElement("td");
+                        var avatarImg = document.createElement("img");
+                        avatarImg.src = item.trainerPic; // Assuming 'avatar' contains the URL to the image
+                        avatarImg.alt = "Avatar";
+                        avatarImg.style.width = "35px"; // Set the width of the avatar image
+                        avatarImg.style.height = "35px"; // Set the height of the avatar image
+                        avatarImg.style.borderRadius = "50%"
+                        cellAvatar.appendChild(avatarImg);
+                        row.appendChild(cellAvatar);
+
+                        var cellId = document.createElement("td");
+                        cellId.textContent = item.tid;
+                        row.appendChild(cellId);
+
+                        var cellName = document.createElement("td");
+                        cellName.textContent = item.tname;
+                        row.appendChild(cellName);
+
+                        var cellGender = document.createElement("td");
+                        cellGender.textContent = item.gender;
+                        row.appendChild(cellGender);
+
+                        var cellAge = document.createElement("td");
+                        cellAge.textContent = item.age;
+                        row.appendChild(cellAge);
+
+                        var cellAction = document.createElement("td");
+
+                        // Agree button
+                        var agreeButton = document.createElement("button");
+                        agreeButton.textContent = "同意";
+                        agreeButton.onclick = function() {
+                            handleAgreeAction(item.tid);
+                        };
+                        cellAction.appendChild(agreeButton);
+
+                        // Reject button
+                        var rejectButton = document.createElement("button");
+                        rejectButton.textContent = "拒绝";
+                        rejectButton.onclick = function() {
+                            // Handle reject action
+                            handleRefuseAction(item.tid);
+                        };
+                        cellAction.appendChild(rejectButton);
+
+                        row.appendChild(cellAction);
+
+                        tableBody.appendChild(row);
+                    });
+
+                    // Display the modal
+                    modal.style.display = "block";
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+            }
+
+            // 隐藏模态窗
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+        // 搜索好友
+
+    });
+    function fetchFriends() {
+    fetch('/get-friends')
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('friendTableBody');
+            tbody.innerHTML = ''; // 清空表格
+            const continentCounts = {
+                'Asia': 0,
+                'Africa': 0,
+                'North America': 0,
+                'South America': 0,
+                'Europe': 0,
+                'Australia': 0,
+                'Antarctica': 0
+            };
+
+            data.trainers.forEach(trainer => {
+                // 统计每个大洲的训练师数量
+                if (trainer.location in continentCounts) {
+                    continentCounts[trainer.location]++;
+                }
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><img src="${trainer.trainerPic}" alt="头像" class="rounded-circle" width="50" height="50"></td>
+                    <td>${trainer.tname}</td>
+                    <td>${trainer.gender}</td>
+                    <td>${trainer.location}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteFriend(${trainer.tid})">删除</button>
+                        <button class="btn btn-primary" onclick="talkFriend(${trainer.tid})">聊天</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            // 调用 init 函数，传递统计结果
+            init(continentCounts);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+}
+
+    function deleteFriend(friendId) {
+        fetch('/delete-friend', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ friendId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('好友删除成功');
+                fetchFriends(); // 重新获取好友列表
+
+            } else {
+                alert('删除好友失败: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('删除失败');
+        });
+    }
+///////////////////聊天功能//////////////////////////////////////////////////
+    function chatFriend(friendId) {
+        const chatModal = document.getElementById("chatModal");
+        const chatMessages = document.getElementById("chatMessages");
+        const sendMessageForm = document.getElementById("sendMessageForm");
+        chatModal.style.display = "block";
+
+        // 获取消息记录
+        fetch(`/get-chat?friendId=${friendId}`)
+        .then(response => response.json())
+        .then(data => {
+            chatMessages.innerHTML = '';
+            data.messages.forEach(message => {
+                const messageElement = document.createElement('div');
+                messageElement.innerHTML = `<br>
+                      <strong>${message.senderName}:</strong>
+                      <span style="font-size: smaller; font-style: italic;">${message.time}</span>
+                      <br>
+                      <span style="font-size: 20px;font-family: 'KaiTi', '楷体';">${message.message}</span>
+                    `;
+                chatMessages.appendChild(messageElement);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching chat:', error);
+        });
+
+        // 发送消息
+        sendMessageForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const chatMessage = document.getElementById('chatMessage').value;
+            const currentTime = new Date().toLocaleString();
+            fetch('/send-message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ friendId, content: chatMessage })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const messageElement = document.createElement('div');
+                     messageElement.innerHTML = `
+                        <strong>${data.name}:</strong>
+                        <span style="font-size: smaller; font-style: italic;">${currentTime}</span>
+                        <br>
+                        <span style="font-size: larger; font-family: 'KaiTi', '楷体';">${chatMessage}</span>
+                    `;
+                    chatMessages.appendChild(messageElement);
+                    document.getElementById('chatMessage').value = '';
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending message:', error);
+            });
+        });
+    }
+    function talkFriend(friendId) {
+            const Id = friendId;
+            window.location.href = `chatWindow.html?Id=${encodeURIComponent(Id)}`;
+
+    }
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+<script>
+  function init(continentCounts) {
+    const container = document.getElementById('container3d');
+    // 清空场景中的所有对象
+    while(container.firstChild){
+        container.removeChild(container.firstChild);
+    }
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setClearColor(0x000000, 0); // 设置透明背景
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    // 设置相机初始位置
+    const initialCameraPosition = new THREE.Vector3(0, 0, 12.5);
+    camera.position.copy(initialCameraPosition);
+    camera.lookAt(scene.position);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.25;
+    controls.enableZoom = true;
+
+    // 添加光源
+    const ambientLight = new THREE.AmbientLight(0x404040); // 环境光
+    scene.add(ambientLight);
+
+    const directionalLight1 = new THREE.DirectionalLight(0xffffff, 1); // 主方向光
+    directionalLight1.position.set(1, 1, 1).normalize();
+    scene.add(directionalLight1);
+
+    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 1); // 辅助方向光
+    directionalLight2.position.set(-1, -1, -1).normalize();
+    scene.add(directionalLight2);
+
+    const pointLight = new THREE.PointLight(0xffffff, 1, 100); // 点光源
+    pointLight.position.set(10, 10, 10);
+    scene.add(pointLight);
+
+    // 加载材质和模型
+    const mtlLoader = new THREE.MTLLoader();
+    mtlLoader.load('3D/earth.mtl', function (materials) {
+        materials.preload();
+        const objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.load('3D/earth.obj', function (object) {
+            object.scale.set(4.5, 4.5, 4.5);
+            scene.add(object);
+            object.position.set(0, 0, 0);
+            object.rotation.y = THREE.Math.degToRad(-150); // 将模型旋转到东经150度
+            console.log(object);
+        });
+    });
+
+    // 添加交互信息点
+    const points = [
+        { name: 'Asia', position: { lat: 34.0479, lon: 100.6197 }, image: 'photo/ball.png' },
+        { name: 'Africa', position: { lat: -8.7832, lon: 0 }, image: 'photo/ball.png' },
+        { name: 'North America', position: { lat: 54.5260, lon: -105.2551 }, image: 'photo/ball.png' },
+        { name: 'South America', position: { lat: -8.7832, lon: -75 }, image: 'photo/ball.png' },
+        { name: 'Europe', position: { lat: 54.5260, lon: 15.2551 }, image: 'photo/ball.png' },
+        { name: 'Australia', position: { lat: -25.2744, lon: 133.7751 }, image: 'photo/ball.png' },
+        { name: 'Antarctica', position: { lat: -90, lon: 0 }, image: 'photo/ball.png' }
+    ];
+
+    const infoBox = document.getElementById('infoBox');
+
+    points.forEach(point => {
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.load(point.image, function (texture) {
+            const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+            const sprite = new THREE.Sprite(spriteMaterial);
+            const { x, y, z } = convertLatLonToXYZ(point.position.lat, point.position.lon, 5);
+            sprite.position.set(x, y, z);
+            sprite.scale.set(0.5, 0.5, 0.5); // 调整大小
+            sprite.name = point.name;
+
+            scene.add(sprite);
+
+            // 添加点击事件
+            sprite.onClick = function (event) {
+                console.log(`Clicked on ${point.name}`);
+                // 更新信息框内容
+                infoBox.innerHTML = `<h3 id="countititle">${point.name}</h3><p>你有<span id="friendnum">${continentCounts[point.name]}</span>位好友在<span id="countinent">${point.name}</span>！</p>`;
+                infoBox.style.display = 'block';
+                infoBox.style.left = `${event.clientX + 10}px`; // 位置调整
+                infoBox.style.top = `${event.clientY + 10}px`;  // 位置调整
+
+                // 移动并放大相机
+                gsap.to(camera.position, {
+                    duration: 1,
+                    x: x * 2,
+                    y: y * 2,
+                    z: z * 2,
+                    onUpdate: function () {
+                        camera.lookAt(scene.position);
+                    }
+                });
+            };
+        });
+    });
+
+    // 将纬度和经度转换为三维坐标
+    function convertLatLonToXYZ(lat, lon, radius) {
+        const phi = (90 - lat) * (Math.PI / 180);
+        const theta = (lon + 180) * (Math.PI / 180);
+        const x = -(radius * Math.sin(phi) * Math.cos(theta));
+        const y = radius * Math.cos(phi);
+        const z = radius * Math.sin(phi) * Math.sin(theta);
+        return { x, y, z };
+    }
+
+    // 检测点击事件
+    renderer.domElement.addEventListener('click', onDocumentMouseClick, false);
+
+    function onDocumentMouseClick(event) {
+        event.preventDefault();
+        console.log("Click detected");
+        const mouse = new THREE.Vector2();
+        const rect = container.getBoundingClientRect(); // 获取容器的边界框
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        const raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(mouse, camera);
+
+        const intersects = raycaster.intersectObjects(scene.children, true);
+        if (intersects.length > 0 && intersects[0].object.onClick) {
+            console.log("Intersected with object:", intersects[0].object.name);
+            intersects[0].object.onClick(event);
+        } else {
+            console.log("No intersection with clickable objects");
+            // 隐藏信息框
+            infoBox.style.display = 'none';
+        }
+    }
+    // 渲染循环
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+    }
+    animate();
+}
+</script>
+</body>
+</html>

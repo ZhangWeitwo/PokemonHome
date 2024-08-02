@@ -1,0 +1,392 @@
+ body {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            height: 100vh; /* 使侧边栏高度占满视口 */
+            background: linear-gradient(to bottom, #6a11cb, #2575fc); /* 渐变背景 */
+            color: white;
+            padding: 20px;
+            position: fixed; /* 固定位置 */
+            width: 200px;
+        }
+.sidebar .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 20px 0;
+        }
+        .footer {
+	margin: 40px 0;
+	color: #888;
+	text-align: center;
+}
+        /* 上导航栏圆角和阴影 */
+        .navbar {
+            border-radius: 200px; /* 圆角 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 阴影 */
+            background: rgba(255, 255, 255, 0.8); /* 半透明白色背景 */
+            backdrop-filter: blur(10px); /* 磨砂效果 */
+            -webkit-backdrop-filter: blur(10px); /* 磨砂效果 */
+        }
+
+        .main-content {
+            margin-left: 200px; /* 确保主要内容不被侧边栏覆盖 */
+            padding: 20px;
+        }
+    .list-group-item {
+        padding: 10px 15px;
+        margin: 5px 0;
+
+        color: #000;
+        background: rgba(255, 255, 255, 0.8); /* 半透明白色背景 */
+       backdrop-filter: blur(10px); /* 磨砂效果 */
+       -webkit-backdrop-filter: blur(10px); /* 磨砂效果 */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 阴影 */
+
+        text-decoration: none;
+        transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+    }
+
+    /* 鼠标悬停效果 */
+    .list-group-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        background-color: #e2e6ea;
+    }
+
+    /* 点击效果 */
+    .list-group-item:active {
+    transform: scale(1.2);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    background-color: #dae0e5;
+    }
+
+    .main-content {
+            flex-grow: 1;
+            width: 100%;
+            height: 100vh; /* 视口高度 */
+            padding: 20px;
+            overflow: hidden; /* 隐藏溢出内容 */
+            animation: gradientAnimation 20s ease infinite;
+            background: linear-gradient(45deg, #57df7d, #9a72ec, #f5f84b, #3a9afa);
+            background-size: 400% 400%;
+        }
+ @keyframes gradientAnimation {
+  0% {
+      background-position: 0% 50%;
+  }
+  50% {
+      background-position: 100% 50%;
+  }
+  100% {
+      background-position: 0% 50%;
+  }
+ }
+
+ .content {
+     text-align: center;
+     color: #333;
+ }
+    .table-container {
+     height: calc(100vh - 200px); /* 视口高度减去其他固定元素的高度，例如导航栏 */
+     overflow-y: auto; /* 允许垂直滚动 */
+ }
+ .navbar-light {
+     background-image: url("../photo/bk.svg");
+
+ }
+ .list-group-item-action {
+     background-color: #d0e9ff;
+ }
+ .list-group-item-action:hover {
+     background-color: #b0d7ff;
+ }
+ /* custom-styles.css */
+ .input-group.rounded .form-control {
+ border-top-left-radius: 20px;
+ border-bottom-left-radius: 20px;
+ }
+
+ .input-group.rounded .btn {
+     border-top-right-radius: 20px;
+     border-bottom-right-radius: 20px;
+ }
+
+ .input-group .form-control:focus {
+     box-shadow: none;
+     border-color: #ced4da;
+ }
+ .list-group{
+
+        height: 100vh;
+    }
+    /* 标题样式 */
+ .list-group-item-heading {
+    background-image: url('../photo/headpic.png');
+     background-size: cover; /* 使背景图片覆盖整个元素 */
+     background-position: center; /* 使背景图片居中 */
+     background-repeat: no-repeat; /* 防止背景图片重复 */
+     color: white; /* 文本颜色 */
+     font-weight: bold; /* 加粗文本 */
+     text-shadow:
+                -1px -1px 0 #000,
+                 1px -1px 0 #000,
+                -1px  1px 0 #000,
+                 1px  1px 0 #000; /* 黑色描边 */
+     cursor: default; /* 禁用鼠标点击 */
+     height: 62px;
+ }
+.list-group-item-heading:hover {
+            transform: scale(1.2); /* 放大 */
+            text-shadow:
+                -1px -1px 10px #fff,
+                 1px -1px 10px #fff,
+                -1px  1px 10px #fff,
+                 1px  1px 10px #fff; /* 发光效果 */
+        }
+ /*.modal {*/
+ /*    z-index: 1;*/
+ /*    left: 0;*/
+ /*    top: 0;*/
+ /*    width: 100%;*/
+ /*    height: 100%;*/
+ /*    !*overflow: auto;*!*/
+ /*    background-color: rgb(0,0,0);*/
+ /*    background-color: rgba(0,0,0,0.4);*/
+ /*    padding-top: 60px;*/
+ /*}*/
+ .close {
+     color: #aaa;
+     float: right;
+     font-size: 28px;
+     font-weight: bold;
+ }
+
+ .close:hover,
+ .close:focus {
+     color: black;
+     text-decoration: none;
+     cursor: pointer;
+ }
+ /*表格*/
+ .table-container {
+     background: rgba(255, 255, 255, 0.8); /* 半透明背景 */
+     backdrop-filter: blur(10px); /* 磨砂效果 */
+     -webkit-backdrop-filter: blur(10px); /* 磨砂效果 */
+     border-radius: 10px; /* 圆角 */
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 阴影 */
+     padding: 15px; /* 内边距 */
+ }
+
+ /* 表格样式 */
+ .table {
+     margin-bottom: 0; /* 去除表格底部外边距 */
+ }
+
+ /* 表头样式 */
+ .thead-light {
+     background: rgba(255, 255, 255, 0.5); /* 半透明背景 */
+ }
+
+ /* 表格行样式 */
+ .table-hover tbody tr:hover {
+     background-color: rgba(0, 123, 255, 0.1); /* 鼠标悬停效果 */
+ }
+ .table-hover tbody tr:nth-child(odd) {
+  background-color: #b0d7ff; /* 红色背景 */
+ }
+
+ .table-hover tbody tr:nth-child(even) {
+     background-color: #ffffff; /* 白色背景 */
+ }
+
+ /* 设置表格行的过渡效果 */
+ .table-hover tbody tr {
+ transition: transform 0.2s ,box-shadow 0.2s; /* 设置过渡时间为0.2秒 */
+
+ }
+
+ /* 鼠标悬停时放大表格行 */
+ .table-hover tbody tr:hover {
+     transform: scale(1.04); /* 放大1.05倍 */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 添加阴影效果 */
+ }
+/*/////////////////////////////////////////////////////////////*/
+#pokemon-ball {
+    background-image: url('../photo/ball.png');
+    background-size: contain;  /* 根据需要，您可以选择cover(覆盖)或contain(包含) */
+    background-position: 20% center;  /* 将图片向左移动50% */
+    background-repeat: no-repeat;  /* 如果您不希望图片重复，可以设置为no-repeat */
+}
+
+
+        #trainerPokemonList {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+        }
+        .modal-content {
+            background-color: rgba(255, 255, 255, 0.8); /* 透明背景 */
+            backdrop-filter: blur(10px); /* 磨砂效果 */
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            /*max-width: 500px;*/
+            border-radius: 10px; /* 圆角 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 阴影 */
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+#pokemon-bag{
+    background-image: url('../photo/bag.png');
+    background-size: contain;  /* 根据需要，您可以选择cover(覆盖)或contain(包含) */
+    background-position: 25% center;  /* 将图片向左移动50% */
+    background-repeat: no-repeat;  /* 如果您不希望图片重复，可以设置为no-repeat */
+
+}
+#pokemon-exchange{
+    background-image: url('../photo/exchange.png');
+    background-size: contain;  /* 根据需要，您可以选择cover(覆盖)或contain(包含) */
+    background-position: -60% center;  /* 将图片向左移动50% */
+    background-repeat: no-repeat;  /* 如果您不希望图片重复，可以设置为no-repeat */
+}
+#pokemon-exchangetable{
+    background-image: url('../photo/exchangetable.png');
+    background-size: contain;  /* 根据需要，您可以选择cover(覆盖)或contain(包含) */
+
+    background-repeat: no-repeat;  /* 如果您不希望图片重复，可以设置为no-repeat */
+}
+
+#storagetable{
+     height: 600px;
+}
+@keyframes slideUp {
+        from {
+            transform: translateY(100vh);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    .slide-up {
+        animation: slideUp 0.5s ease-in-out forwards;
+    }
+#tabbag{
+    height: 500px;
+}
+/*下拉菜单*/
+  .custom-dropdown {
+        position: absolute;
+        z-index: 1050; /* 确保下拉菜单位于最上层 */
+    }
+
+    /* 磨砂、圆角、阴影和透明效果 */
+    .custom-dropdown {
+        background: rgba(255, 255, 255, 0.8); /* 半透明白色背景 */
+        backdrop-filter: blur(10px); /* 磨砂效果 */
+        -webkit-backdrop-filter: blur(10px); /* 磨砂效果 */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 阴影 */
+        border-radius: 10px; /* 圆角 */
+
+    }
+
+    /* 调整下拉菜单项的样式 */
+    .custom-dropdown .dropdown-item {
+        color: #333;
+    }
+
+    .custom-dropdown .dropdown-item:hover {
+        background-color: rgba(0, 123, 255, 0.1); /* 鼠标悬停效果 */
+    }
+
+       .custom-dropdown {
+       position: absolute;
+       z-index: 1050; /* 确保下拉菜单位于最上层 */
+   }
+
+          .custom-dropdown {
+       background: rgba(255, 255, 255, 0.8); /* 半透明白色背景 */
+       backdrop-filter: blur(10px); /* 磨砂效果 */
+       -webkit-backdrop-filter: blur(10px); /* 磨砂效果 */
+              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 阴影 */
+       border-radius: 10px; /* 圆角 */
+
+   }
+
+             .custom-dropdown .dropdown-item {
+       color: #333;
+   }
+
+   .custom-dropdown .dropdown-item:hover {
+       background-color: rgba(0, 123, 255, 0.1); /* 鼠标悬停效果 */
+   }
+   /*搜索*/
+ #searchInput{
+     height: 50px;
+ }
+
+.backpack-icon {
+     position: fixed; /* 或者使用 absolute，如果你在一个有定位的父容器中 */
+     bottom: 0; /* 从页面底部距离 */
+     right: 0; /* 从页面右边距离 */
+     margin: 10px; /* 可选，给图标添加间距，避免紧贴边缘 */
+ }
+
+ .backpack-icon img {
+     width: 50px; /* 控制图标的大小 */
+     height: 50px;
+     cursor: pointer; /* 鼠标悬停时显示手型指针 */
+ }

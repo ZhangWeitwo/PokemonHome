@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仓库</title>
+    <!-- 引入Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- 引入Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        #container3d {
+            width: 600px;  /* 设定容器宽度 */
+            height: 400px; /* 设定容器高度 */
+            transition: width 0.5s, height 0.5s; /* 添加过渡效果 */
+        }
+        .card-title-1 {
+            font-size: 12px;
+            color: #fff;
+            background-image: linear-gradient(to right, #ff7e5f, #feb47b);
+            padding: 10px;
+            width: 100%;
+            border-radius: 25px;
+           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 添加阴影 */
+        }
+        body {
+            margin: 0;
+            display: flex;
+            overflow: hidden; /* 去除滚动条 */
+        }
+        .main-content-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .main-content {
+            width: auto;
+            flex-grow: 1;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 20px;
+        }
+        .card-body {
+            padding: 10px;
+        }
+        #userStatsChart, #wordCloud {
+            height: 100%;
+            width: 100%;
+        }
+        .glass-panel {
+            width: 40%; /* 确保四个框能够并排显示 */
+            height: 350px;
+            background: rgba(191, 191, 191, 0.5);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: left;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            margin: 10px; /* 添加外边距以确保间距 */
+            resize: both; /* 使元素可以调整大小 */
+            overflow: hidden; /* 确保内容不溢出 */
+        }
+        .glass-panel:hover {
+            resize: both;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            background: wheat;
+        }
+        /* 加载动画样式 */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .spinner {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #3498db;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+        #panel2{
+            display: flex;
+            flex-direction: column;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .info-card {
+            width: 100%;
+        }
+        .info-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .info-body {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #infotab {
+            width: auto;
+            height: auto;
+            margin-left: 20px;
+        }
+        .info-card img {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+        }
+        .chart-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        @keyframes reveal {
+            0% {
+                width: 0;
+                color: transparent;
+            }
+            100% {
+                width: 100%;
+                color: black;
+            }
+        }
+        .animated {
+            animation-duration: 1s;
+            animation-fill-mode: both;
+        }
+
+    </style>
+</head>
+<body>
+<!-- 加载动画 -->
+<div class="loading-screen" id="loading-screen">
+    <div class="spinner"></div>
+</div>
+<!-- 侧边导航栏 -->
+<nav class="sidebar">
+    <div class="list-group">
+       <div class="list-group-item list-group-item-heading">POKEMONHOME</div> <!-- 无法选中的头部 -->
+        <a href="package.html" class="list-group-item list-group-item-action ">背包</a>
+        <a href="storage.html" class="list-group-item list-group-item-action ">仓库</a>
+        <a href="card.html" class="list-group-item list-group-item-action active">训练师卡片</a>
+        <a href="pokedex.html" class="list-group-item list-group-item-action">全图鉴</a>
+        <a href="itemdex.html" class="list-group-item list-group-item-action">道具图鉴</a>
+        <a href="exchange.html" class="list-group-item list-group-item-action">交换池</a>
+        <a href="friends.html" class="list-group-item list-group-item-action ">好友</a>
+        <a href="itemPackage.html" class="list-group-item list-group-item-action ">道具背包</a>
+        <a href="trade.html" class="list-group-item list-group-item-action ">道聚城</a>
+        <div class="divider"></div>
+    </div>
+</nav>
+<!-- 主要内容容器 -->
+<div class="main-content-container">
+    <!-- 主要内容 -->
+    <div class="main-content">
+        <!-- 玻璃板内容 -->
+        <div class="glass-panel" id="panel2">
+            <div class="info-card">
+                <div class="info-header">
+                    <h5 class="card-title card-title-1">基本信息</h5>
+                </div>
+                <hr>
+                <div class="info-body">
+                    <div id="infotab">
+                        <p id="trainerName" class="brush-effect clickable">bob</p>
+                        <p id="trainerAge" class="brush-effect clickable">年龄: 16</p>
+                        <p id="trainerGender" class="brush-effect clickable">性别: 男</p>
+                        <p id="trainerId" class="brush-effect clickable">ID: 0</p>
+                        <p id="trainerloc" class="brush-effect clickable">Europe</p>
+                    </div>
+                    <img id="trainer-avatar" src="" alt="头像">
+                </div>
+            </div>
+        </div>
+
+        <!-- User Data Statistics -->
+        <div class="glass-panel">
+            <h5 class="card-title card-title-1">宝可梦统计</h5>
+            <div class="chart-container">
+                <canvas id="userStatsChart"></canvas>
+            </div>
+        </div>
+        <!-- Word Cloud -->
+        <div class="glass-panel">
+            <h5 class="card-title card-title-1">宝可梦词云</h5>
+            <div class="chart-container">
+                <div id="wordCloud"></div>
+            </div>
+        </div>
+        <!-- 新增的内容框 -->
+        <div class="glass-panel">
+           <h5 class="card-title card-title-1">Favorite Pokemon</h5>
+            <div id="container3d"></div>
+        </div>
+    </div>
+</div>
+<!-- 引入Bootstrap和jQuery的JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@6.7.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-cloud@1.2.5/build/d3.layout.cloud.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+    const typeColors = {
+        '火': '#ff4422',
+        '水': '#3399ff',
+        '草': '#77cc55',
+        '电': '#ffcc33',
+        '冰': '#77ddff',
+        '格斗': '#bb5544',
+        '毒': '#aa5599',
+        '地面': '#ddbb55',
+        '飞行': '#6699ff',
+        '超能': '#ff5599',
+        '虫': '#aabb22',
+        '岩石': '#bbaa66',
+        '幽灵': '#6666bb',
+        '龙': '#7766ee',
+        '恶': '#775544',
+        '钢': '#aaaabb',
+        '妖精': '#ffaaff',
+        '一般': 'gray',
+    };
+
+    document.querySelectorAll('.glass-panel').forEach(panel => {
+        panel.addEventListener('mouseover', () => {
+            document.querySelectorAll('.glass-panel').forEach(p => {
+                if (p !== panel) {
+                    p.classList.add('shrink');
+                } else {
+                    p.classList.remove('shrink');
+                }
+            });
+        });
+        panel.addEventListener('mouseout', () => {
+            document.querySelectorAll('.glass-panel').forEach(p => {
+                p.classList.remove('shrink');
+            });
+        });
+    });
+    document.addEventListener('DOMContentLoaded', async function () {
+        try {
+            const trainerResponsePromise = fetch('/get-trainer');
+            const trainerResponse = await trainerResponsePromise;
+            if (!trainerResponse.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const trainerData = await trainerResponse.json();
+            if (trainerData.tname.length > 0) {
+                // 设置头像图片的src属性
+                document.getElementById('trainer-avatar').src = trainerData.trainerPic;
+                document.getElementById('trainerName').innerText = `名字：${trainerData.tname}`;
+                document.getElementById('trainerAge').innerText = `年龄：${trainerData.age}`;
+                document.getElementById('trainerGender').innerText = `性别：${trainerData.gender}`;
+                document.getElementById('trainerId').innerText = `ID：${trainerData.tid}`;
+                document.getElementById('trainerName').innerText = `${trainerData.tname}`;
+                document.getElementById('trainerloc').innerText=`来自：${trainerData.location}`
+            } else {
+                console.error('No trainer found');
+            }
+        } catch (error) {
+            console.error('Error fetching trainer data or name:', error);
+            document.getElementById('trainerName').innerText = '获取训练师信息时出错';
+        }
+        // Chart.js setup
+        const ctx = document.getElementById('userStatsChart').getContext('2d');
+        let chart;
+        // Fetch Pokemon data and process it
+        fetchPokemons().then(pokemons => {
+            const totalPokemon = pokemons.length;
+
+            const typeCounts = {};
+            Object.keys(typeColors).forEach(type => {
+                typeCounts[type] = 0;
+            });
+            pokemons.forEach(pokemon => {
+                typeCounts[pokemon.type1]++;
+                if (pokemon.type2) {
+                    typeCounts[pokemon.type2]++;
+                }
+            });
+
+            const sortedPokemon = pokemons.sort((a, b) => b.lev - a.lev);
+            const top20Pokemon = sortedPokemon.slice(0, 20).map(pokemon => ({ text: pokemon.pname, size: pokemon.lev * 2 }));
+chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: Object.keys(typeCounts),
+        datasets: [{
+            label: '宝可梦数量',
+            data: Object.values(typeCounts),
+            backgroundColor: Object.keys(typeCounts).map(type => typeColors[type] || 'gray'),
+            borderColor: 'rgba(0, 0, 0, 0.1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        hover: {
+            onHover: function(e, elements) {
+                if (elements.length) {
+                    e.target.style.cursor = 'pointer';
+                } else {
+                    e.target.style.cursor = 'default';
+                }
+            },
+            animationDuration: 400 // 保持 hover 动画
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1 // 确保 y 坐标值为整数
+                }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+            // Create word cloud for top 20 Pokemon by level
+var layout = d3.layout.cloud()
+    .size([600, 200])
+    .words(top20Pokemon)
+    .padding(5)
+    .rotate(function() { return ~~(Math.random() * 2) * 90; })
+    .font("Impact")
+    .fontSize(function(d) { return d.size; })
+    // .spiral(function(size) {
+    //     // 自定义的圆形螺旋
+    //     var e = size[0] / size[1];
+    //     return function(t) {
+    //         return [e * (1 + t) * Math.cos(t), (1 + t) * Math.sin(t)];
+    //     };
+    // })
+    .on("end", draw);
+layout.start();
+
+function draw(words) {
+    d3.select("#wordCloud").append("svg")
+        .attr("width", layout.size()[0])
+        .attr("height", layout.size()[1])
+        .append("g")
+        .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+        .selectAll("text")
+        .data(words)
+        .enter().append("text")
+        .style("font-size", function(d) { return d.size + "px"; })
+        .style("font-family", "Impact")
+        .style("fill", function(d, i) { return d3.schemeCategory10[i % 10]; })
+        .attr("text-anchor", "middle")
+        .attr("transform", function(d) {
+            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+        })
+        .text(function(d) { return d.text; });
+}
+            // Hide loading screen
+            document.getElementById('loading-screen').style.display = 'none';
+        });
+
+    });
+
+    async function fetchPokemons() {
+        try {
+            const response = await fetch('/CheckPokemonInWarehouse');
+            const data = await response.json();
+            return data.pokemons;
+        } catch (error) {
+            console.error('Error fetching Pokemon data:', error);
+            return [];
+        }
+    }
+
+    document.querySelectorAll('.glass-panel').forEach(panel => {
+        panel.addEventListener('mouseover', () => {
+            document.querySelectorAll('.glass-panel').forEach(p => {
+                if (p !== panel) {
+                    p.classList.add('shrink');
+                } else {
+                    p.classList.remove('shrink');
+                }
+            });
+        });
+        panel.addEventListener('mouseout', () => {
+            document.querySelectorAll('.glass-panel').forEach(p => {
+                p.classList.remove('shrink');
+            });
+        });
+    });
+
+    function load3DModel() {
+        // 基本设置
+        let container = document.getElementById('container3d');
+        let scene = new THREE.Scene();
+        let camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        let renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setClearColor(0x000000, 0); // 设置透明背景
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1;
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        container.appendChild(renderer.domElement);
+
+        // 添加光源
+        let hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.1);
+        hemiLight.position.set(0, 500, 0);
+        scene.add(hemiLight);
+
+        let dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+        dirLight.position.set(0, 200, 100);
+        dirLight.castShadow = true;
+        dirLight.shadow.camera.top = 180;
+        dirLight.shadow.camera.bottom = -100;
+        dirLight.shadow.camera.left = -120;
+        dirLight.shadow.camera.right = 120;
+        scene.add(dirLight);
+
+        // 设置相机位置
+        camera.position.set(0, 5, 10);
+        camera.lookAt(0, 0, 0);
+
+        // 添加 OrbitControls
+        let controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
+        controls.screenSpacePanning = false;
+        controls.maxPolarAngle = Math.PI / 2;
+        controls.enableZoom = true;
+        controls.zoomSpeed = 1.2;
+
+        // 加载模型并自动缩放和渲染颜色
+        let model; // 定义一个变量来引用加载的模型
+
+        let mtlLoader = new THREE.MTLLoader();
+        let objLoader = new THREE.OBJLoader();
+
+        console.log('Loading MTL file...');
+        mtlLoader.load(
+            '3D/Charmander.mtl',
+            function(materials) {
+                console.log('MTL file loaded successfully');
+                materials.preload();
+                objLoader.setMaterials(materials);
+                objLoader.load('3D/Charmander.obj', function(obj) {
+                    console.log('OBJ file loaded successfully with MTL materials');
+                    processObject(obj);
+                }, undefined, function(error) {
+                    console.error('Error loading OBJ file with MTL materials:', error);
+                });
+            },
+            undefined,
+            function(error) {
+                console.warn('MTL file not found or failed to load:', error);
+                // 如果没有找到 MTL 文件，就直接加载 OBJ 文件
+                objLoader.load('3D/Charmander.obj', function(obj) {
+                    console.log('OBJ file loaded successfully without MTL materials');
+                    applyTexture(obj, '3D/Charmander_BaseColor_1001.png'); // 使用 PNG 纹理
+                    processObject(obj);
+                }, undefined, function(error) {
+                    console.error('Error loading OBJ file without MTL materials:', error);
+                });
+            }
+        );
+        function applyTexture(obj, texturePath) {
+            console.log('Applying texture...');
+            let textureLoader = new THREE.TextureLoader();
+            let texture = textureLoader.load(texturePath, function() {
+                console.log('Texture loaded successfully');
+            }, undefined, function(error) {
+                console.error('Error loading texture:', error);
+            });
+
+            obj.traverse(function(child) {
+                if (child.isMesh) {
+                    child.material.map = texture;
+                    child.material.needsUpdate = true;
+                }
+            });
+        }
+
+        function processObject(obj) {
+            // 计算模型包围盒
+            console.log('Processing object...');
+            let bbox = new THREE.Box3().setFromObject(obj);
+            let center = bbox.getCenter(new THREE.Vector3());
+            let size = bbox.getSize(new THREE.Vector3());
+
+            // 计算缩放比例
+            let maxSize = Math.max(size.x, size.y, size.z);
+            let scale = 10 / maxSize;
+
+            // 应用缩放和位移
+            obj.scale.set(scale, scale, scale);
+            obj.position.sub(center.multiplyScalar(scale));
+
+            if (model) {
+                scene.remove(model); // 移除之前的模型
+            }
+            model = obj; // 保存对模型的引用
+            scene.add(obj);
+
+            animate(); // 确保动画循环开始
+            renderer.render(scene, camera); // 初始渲染
+            console.log('Object added to scene');
+        }
+
+        // 窗口大小调整
+        window.addEventListener('resize', function() {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.render(scene, camera); // 确保调整大小后重新渲染
+        });
+
+        // 动画循环
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        // 监听鼠标移动事件，更新模型旋转
+        document.addEventListener('mousemove', function(event) {
+            if (model) {
+                let mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                let mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+                model.lookAt(new THREE.Vector3(mouseX * 5, mouseY * 5, 10));
+            }
+        });
+        // 开始动画
+        animate();
+    }
+
+    load3DModel();
+</script>
+<script>
+    document.querySelectorAll('.clickable').forEach(function(element) {
+        element.addEventListener('click', function() {
+            element.classList.add('animated', 'wobble');
+            setTimeout(function() {
+                element.classList.remove('animated', 'wobble');
+            }, 1000);
+        });
+    });
+</script>
+</body>
+</html>

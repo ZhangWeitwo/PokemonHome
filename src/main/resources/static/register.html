@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Kodinger">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>My Login Page &mdash; Bootstrap 4 Login Page Snippet</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/my-login.css">
+    <style>
+    #picPreview {
+        max-width: 100%;
+        max-height: 50px;
+        display: none;
+    }
+</style>
+</head>
+<body class="my-login-page">
+    <section class="h-100">
+        <div class="container h-100">
+            <div class="row justify-content-md-center h-100">
+                <div class="card-wrapper">
+                    <div class="brand">
+                        <img src="photo/logo2.png" alt="bootstrap 4 login page">
+                    </div>
+                    <div class="card fat">
+                        <div class="card-body">
+                            <h4 class="card-title">训练师注册</h4>
+                            <form id="addTrainerForm" method="POST" class="my-login-validation" enctype="multipart/form-data" novalidate="">
+                                <div class="form-group">
+                                    <label for="newTname">名字</label>
+                                    <input id="newTname" type="text" class="form-control" name="name" required autofocus>
+                                    <div class="invalid-feedback">
+                                        请输入名字！
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="age">年龄</label>
+                                    <input id="age" type="text" class="form-control" name="age" required>
+                                    <div class="invalid-feedback">
+                                        请输入年龄！
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="gender">性别</label>
+                                    <select id="gender" class="form-control" name="gender" required>
+                                        <option value="" disabled selected>请选择性别</option>
+                                        <option value="male">男</option>
+                                        <option value="female">女</option>
+                                        <option value="other">其他</option>
+                                    </select>
+                                    <input id="otherGender" type="text" class="form-control mt-2" name="otherGender" placeholder="请输入性别" style="display: none;">
+                                    <div class="invalid-feedback">
+                                        请输入性别！
+                                    </div>
+                                    <div class="form-group">
+                                    <label for="location">填写大洲</label>
+                                    <input id="location" type="text" class="form-control" name="location" required>
+                                    <div class="invalid-feedback">
+                                        请输入年龄！
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPassword">密码</label>
+                                    <input id="newPassword" type="password" class="form-control" name="password" required data-eye>
+                                    <div class="invalid-feedback">
+                                        请输入密码！
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                <label for="trainerPic">上传头像</label>
+                                    <div class="custom-file">
+                                        <input id="trainerPic" type="file" class="custom-file-input" name="trainerPic" accept="image/*" required>
+                                        <label class="custom-file-label" for="trainerPic">选择图片...</label>
+                                        <div class="invalid-feedback">
+                                            请上传图片！
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="form-group">
+                                    <img id="picPreview" src="" alt="头像预览" style="max-width: 100%; display: none;">
+                                </div>
+                                <div class="form-group m-0">
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        注册
+                                    </button>
+                                </div>
+                                <div class="mt-4 text-center">
+                                    已经注册？ <a href="login.html">点击登录</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        版权 &copy; 2024 &mdash; 数据库22小组
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="js/my-login.js"></script>
+    <script>
+        document.getElementById('gender').addEventListener('change', function() {
+            const otherGenderInput = document.getElementById('otherGender');
+            if (this.value === 'other') {
+                otherGenderInput.style.display = 'block';
+                otherGenderInput.required = true;
+            } else {
+                otherGenderInput.style.display = 'none';
+                otherGenderInput.required = false;
+            }
+        });
+        document.getElementById('addTrainerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(document.getElementById('addTrainerForm'));
+
+            fetch('/add-trainer', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('训练师注册成功');
+                    window.location.href = 'login.html'; // 跳转到index.html
+                } else {
+                    alert('训练师注册失败: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('请求失败: ' + error.message);
+            });
+        });
+        // 新增图片预览功能
+        document.getElementById('trainerPic').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('picPreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>

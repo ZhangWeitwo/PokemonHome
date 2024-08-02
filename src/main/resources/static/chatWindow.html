@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>好友管理</title>
+    <!-- 引入Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- 引入Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .main-content {
+            margin-left: 200px; /* 调整侧边栏宽度 */
+            padding: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            transition: transform 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.2);
+        }
+        .info-box {
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 1200px;
+            background-color: rgba(249, 249, 249, 0.8); /* 透明背景色 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            height: 700px; /* 调整高度 */
+            overflow-y: auto; /* 允许滚动 */
+            position: relative; /* 相对定位 */
+            backdrop-filter: blur(10px); /* 虚化效果 */
+        }
+        .input-group {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: row;
+        }
+        #messageInput {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            margin-top: 5px;
+        }
+        #send-button, #exit-chat-button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 0;
+        }
+        #send-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+        #exit-chat-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+        .input-group-append .btn + .btn {
+            margin-left: 5px;
+
+        }
+
+    </style>
+</head>
+<body>
+<!-- 侧边导航栏 -->
+<nav class="sidebar">
+    <div class="list-group">
+        <div class="list-group-item list-group-item-heading">POKEMONHOME</div> <!-- 无法选中的头部 -->
+        <a href="package.html" class="list-group-item list-group-item-action ">背包</a>
+        <a href="storage.html" class="list-group-item list-group-item-action ">仓库</a>
+        <a href="card.html" class="list-group-item list-group-item-action">训练师卡片</a>
+        <a href="pokedex.html" class="list-group-item list-group-item-action">全图鉴</a>
+        <a href="itemdex.html" class="list-group-item list-group-item-action">道具图鉴</a>
+        <a href="exchange.html" class="list-group-item list-group-item-action">交换池</a>
+        <a href="friends.html" class="list-group-item list-group-item-action  active">好友</a>
+        <a href="itemPackage.html" class="list-group-item list-group-item-action ">道具背包</a>
+        <a href="trade.html" class="list-group-item list-group-item-action ">道聚城</a>
+        <div class="divider"></div>
+
+    </div>
+</nav>
+<!-- 主要内容 -->
+<div class="main-content">
+    <!-- 上方导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img id="trainer-avatar" src="" alt="头像" class="rounded-circle" width="30" height="30">
+                        <span id="welcome-text" style="font-weight: bold; color: black; font-family: 'KaiTi', '楷体';"></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="reset.html">更改密码</a>
+                        <a class="dropdown-item" href="login.html">登出</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- 文本框 -->
+    <div class="info-box" id="chat">
+
+    </div>
+    <!-- 文本输入框和发送按钮 -->
+    <div class="input-group mt-3" style="width: 80%; max-width: 1200px; margin: 0 auto;">
+        <input type="text" id="messageInput" class="form-control" placeholder="点击输入..." aria-label="输入您的信息" aria-describedby="send-button">
+        <div class="input-group-append">
+            <button class="btn" type="button" id="send-button">发送</button>
+            <button class="btn" type="button" id="exit-chat-button">退出</button>
+        </div>
+    </div>
+</div>
+<!-- 引入Bootstrap和jQuery的JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<script>
+
+///////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////
+
+    function getQueryParam(param) {
+           const urlParams = new URLSearchParams(window.location.search);
+           return urlParams.get(param);
+    }
+    const friendId = getQueryParam('Id');
+
+    let friendName;
+    fetch(`/get-trainer`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.tname.length > 0) {
+            // 设置头像图片的src属性
+            document.getElementById('trainer-avatar').src = data.trainerPic;
+            friendName = data.tname;
+
+            const ws = new WebSocket(`ws://localhost:8080/chatWindow.html/${friendName}/${friendId}`);
+            const chat = document.getElementById('chat');
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('send-button');
+                ws.onopen = (event) => {
+                    const messageElement4 = document.createElement('div');
+                        // 设置 messageElement4 的 flex 布局
+                        messageElement4.style.display = 'flex';
+                        messageElement4.style.alignItems = 'center';
+                        messageElement4.style.padding = '10px';
+                        messageElement4.style.justifyContent = 'center';
+                        const textElement_tip = document.createElement('span');
+                        textElement_tip.textContent = `------以下是历史聊天记录------`;
+                        textElement_tip.style.fontSize = '16px'; // 设置字体大小
+                        textElement_tip.style.fontFamily = 'Arial, sans-serif';
+                        textElement_tip.style.fontStyle = 'italic'; // 斜体
+                        messageElement4.appendChild(textElement_tip);
+                        chat.appendChild(messageElement4);
+                };
+
+                ws.onmessage = (event) => {
+                    const message = JSON.parse(event.data);
+                    const messageElement = document.createElement('div');
+
+                    if (message.type === 'connect') {
+
+                        const historyMessages = message.history_messages;
+                        //////////////////////////////////////////////////////////
+                        historyMessages.forEach((msg) => {
+                        //////////////////////////////////////////////////////////
+                            const messageElement2 = document.createElement('div');
+                            // 设置 messageElement2 的 flex 布局
+                            messageElement2.style.display = 'flex';
+                            messageElement2.style.alignItems = 'center';
+                            messageElement2.style.padding = '10px';
+                            // 创建图片元素
+                            const imgElement = document.createElement('img');
+                            if(msg.senderName !== message.friendName){
+                                messageElement2.style.justifyContent = 'flex-start';
+                                imgElement.src = message.friendAvatar;
+                                imgElement.style.width = '40px';  // 设置宽度
+                                imgElement.style.height = '40px'; // 设置高度
+                                imgElement.style.borderRadius = '50%'; // 设置圆形
+                                imgElement.style.marginRight = '10px'; // 添加右边距
+                                imgElement.style.right = '10px'; // 设置右边距
+
+                                // 创建文本元素
+                                const textElement = document.createElement('span');
+                                textElement.textContent = `${msg.message}`;
+                                textElement.style.backgroundColor = '#ffffff'; // 设置背景颜色
+                                textElement.style.border = '1px solid #c3e6cb'; // 设置边框
+                                textElement.style.borderRadius = '15px'; // 设置圆角
+                                textElement.style.padding = '10px'; // 设置内边距
+                                textElement.style.display = 'inline-block'; // 设置为内联块元素
+                                //创建时间元素
+                                const messageElement3 = document.createElement('div');
+                                const textElement_time = document.createElement('span');
+                                textElement_time.textContent = `${msg.time}`;
+                                textElement_time.style.fontSize = '12px'; // 设置字体大小
+                                textElement_time.style.fontFamily = 'Arial, sans-serif';
+                                textElement_time.style.fontStyle = 'italic'; // 斜体
+                                // 将图片元素和文本元素添加到 messageElement 中
+                                messageElement2.appendChild(imgElement);
+                                messageElement2.appendChild(textElement);
+                                messageElement3.appendChild(textElement_time);
+
+                                chat.appendChild(messageElement3);
+                            }else{
+                                messageElement2.style.justifyContent = 'flex-end';
+                                imgElement.src = message.myAvatar;
+                                imgElement.style.width = '40px';  // 设置宽度
+                                imgElement.style.height = '40px'; // 设置高度
+                                imgElement.style.borderRadius = '50%'; // 设置圆形
+                                imgElement.style.marginRight = '10px'; // 添加右边距
+                                imgElement.style.right = '10px'; // 设置右边距
+
+                                // 创建文本元素
+                                const textElement = document.createElement('span');
+                                textElement.textContent = `${msg.message}`;
+                                textElement.style.backgroundColor = '#19be2a'; // 设置背景颜色
+                                textElement.style.border = '1px solid #c3e6cb'; // 设置边框
+                                textElement.style.borderRadius = '15px'; // 设置圆角
+                                textElement.style.padding = '10px'; // 设置内边距
+                                textElement.style.display = 'inline-block'; // 设置为内联块元素
+                                //创建时间元素
+                                const messageElement3 = document.createElement('div');
+                                // 设置 messageElement3 的 flex 布局
+                                messageElement3.style.display = 'flex';
+                                messageElement3.style.alignItems = 'center';
+                                messageElement3.style.padding = '10px';
+                                messageElement3.style.justifyContent = 'flex-end';
+
+                                const textElement_time = document.createElement('span');
+                                textElement_time.textContent = `${msg.time}`;
+                                textElement_time.style.fontSize = '12px'; // 设置字体大小
+                                textElement_time.style.fontFamily = 'Arial, sans-serif';
+                                textElement_time.style.fontStyle = 'italic'; // 斜体
+                                // 将图片元素和文本元素添加到 messageElement 中
+                                messageElement2.appendChild(textElement);
+                                messageElement2.appendChild(imgElement);
+                                messageElement3.appendChild(textElement_time);
+                                chat.appendChild(messageElement3);
+                            }
+                            chat.appendChild(messageElement2);
+                        ///////////////////////////////////
+                        });
+                        const messageElement4 = document.createElement('div');
+                        // 设置 messageElement4 的 flex 布局
+                        messageElement4.style.display = 'flex';
+                        messageElement4.style.alignItems = 'center';
+                        messageElement4.style.padding = '10px';
+                        messageElement4.style.justifyContent = 'center';
+                        const textElement_tip = document.createElement('span');
+                        textElement_tip.textContent = `------开启新的聊天------`;
+                        textElement_tip.style.fontSize = '16px'; // 设置字体大小
+                        textElement_tip.style.fontFamily = 'Arial, sans-serif';
+                        textElement_tip.style.fontStyle = 'italic'; // 斜体
+                        messageElement4.appendChild(textElement_tip);
+                        chat.appendChild(messageElement4);
+                        ///////////////////////////
+                    } else if (message.type === 'my_message') {
+
+                        // 设置 messageElement 的 flex 布局
+                        messageElement.style.display = 'flex';
+                        messageElement.style.alignItems = 'center';
+                        messageElement.style.justifyContent = 'flex-end';
+                        messageElement.style.padding = '10px';
+
+                        // 创建图片元素
+                        const imgElement = document.createElement('img');
+                        imgElement.src = message.userAvatar;
+                        imgElement.style.width = '40px';  // 设置宽度
+                        imgElement.style.height = '40px'; // 设置高度
+                        imgElement.style.borderRadius = '50%'; // 设置圆形
+                        imgElement.style.marginRight = '10px'; // 添加右边距
+                        imgElement.style.right = '10px'; // 设置右边距
+
+                        // 创建文本元素
+                        const textElement = document.createElement('span');
+                        textElement.textContent = `${message.message}`;
+                        textElement.style.backgroundColor = '#19be2a'; // 设置背景颜色
+                        textElement.style.border = '1px solid #c3e6cb'; // 设置边框
+                        textElement.style.borderRadius = '15px'; // 设置圆角
+                        textElement.style.padding = '10px'; // 设置内边距
+                        textElement.style.display = 'inline-block'; // 设置为内联块元素
+
+                        // 将图片元素和文本元素添加到 messageElement 中
+                        messageElement.appendChild(textElement);
+                        messageElement.appendChild(imgElement);
+                    } else if (message.type === 'friend_message') {
+
+                        // 设置 messageElement 的 flex 布局
+                        messageElement.style.display = 'flex';
+                        messageElement.style.alignItems = 'center';
+                        messageElement.style.justifyContent = 'flex-start';
+                        messageElement.style.padding = '10px';
+
+                        // 创建图片元素
+                        const imgElement = document.createElement('img');
+                        imgElement.src = message.userAvatar;
+                        imgElement.style.width = '40px';  // 设置宽度
+                        imgElement.style.height = '40px'; // 设置高度
+                        imgElement.style.borderRadius = '50%'; // 设置圆形
+                        imgElement.style.marginRight = '10px'; // 添加右边距
+                        imgElement.style.right = '10px'; // 设置右边距
+
+                        // 创建文本元素
+                        const textElement = document.createElement('span');
+                        textElement.textContent = `${message.message}`;
+                        textElement.style.backgroundColor = '#ffffff'; // 设置背景颜色
+                        textElement.style.border = '1px solid #c3e6cb'; // 设置边框
+                        textElement.style.borderRadius = '15px'; // 设置圆角
+                        textElement.style.padding = '10px'; // 设置内边距
+                        textElement.style.display = 'inline-block'; // 设置为内联块元素
+
+                        // 将图片元素和文本元素添加到 messageElement 中
+                        messageElement.appendChild(imgElement);
+                        messageElement.appendChild(textElement);
+                    } else if (message.type === 'disconnect') {
+                        messageElement.textContent = `${message.friendName} ${message.message}`;
+                    } else if (message.type === 'connect_2') {
+                        messageElement.textContent = `${message.friendName} ${message.message}`;
+                    }
+
+                    chat.appendChild(messageElement);
+                    chat.scrollTop = chat.scrollHeight;// 自动滚动到底部
+                };
+
+                ws.onclose = (event) => {
+                    const message = document.createElement('div');
+                    message.textContent = "已经退出聊天（断开连接）";
+                    chat.appendChild(message);
+                };
+
+                ws.onerror = (event) => {
+                    const message = document.createElement('div');
+                    message.textContent = "Error occurred: " + event.message;
+                    chat.appendChild(message);
+                };
+
+            // 向服务器发送消息
+                sendButton.addEventListener('click', () => {
+                    const message = messageInput.value;
+                    ws.send(message);
+                    messageInput.value = '';
+                });
+            //关闭连接
+                document.getElementById('exit-chat-button').addEventListener('click', function() {
+                    ws.close();
+                    window.location.href = 'friends.html'; // 替换为目标HTML文件的路径
+                    });
+
+            } else {
+                console.error('No trainer found');
+            }
+
+        });
+
+</script>
+</body>
+</html>
